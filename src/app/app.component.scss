@@ -16,12 +16,16 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    @media (max-width: 1000px) {
+      display: none;
+    }
   }
   .todo-app {
     max-width: 430px;
     // height: 202px;
     border-radius: 10px;
     background: #fff !important;
+    min-height: 450px;
     .banner {
       position: relative;
       width: 100%;
@@ -62,7 +66,7 @@
 
     .form-section {
       // width: 100%;
-      padding: 0 25px 25px 25px;
+      padding: 0 18px 10px 18px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -108,11 +112,11 @@
       }
     }
     .todos {
-      padding: 0 25px 25px 25px;
+      padding: 21px 18px 25px 18px;
       .todo-list {
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
 
         .task {
           width: 100%;
