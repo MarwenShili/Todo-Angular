@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { uid } from 'uid-ts';
+import { DAYS_OF_WEEK, MONTHS } from 'src/constants';
 
 interface ITask {
   id: number;
@@ -25,6 +25,24 @@ export class AppComponent {
     if (storedTasks) {
       this.tasks = JSON.parse(storedTasks);
     }
+  }
+
+  getCurrentTimeAndDay() {
+    const daysOfWeek = DAYS_OF_WEEK;
+    const months = MONTHS;
+    const now = new Date();
+
+    const dayOfWeek = daysOfWeek[now.getDay()];
+    const formattedTime = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const month = months[now.getMonth()];
+
+    return {
+      day: `${dayOfWeek} ${now.getDate()} ${month} `,
+      time: formattedTime,
+    };
   }
 
   generateTaskId = () => {
