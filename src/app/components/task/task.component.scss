@@ -1,0 +1,46 @@
+.task {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .section-title-task {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    .todo-text {
+      color: #0d0d0d;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      font-family: Inter;
+    }
+    .todo-date {
+      color: #888;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+  }
+  .actions {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    img {
+      cursor: pointer;
+      width: 18px;
+    }
+    .form-check-input {
+      border-radius: 50% !important;
+      border: #20eeb0;
+    }
+
+    .delete-button {
+      cursor: pointer;
+      img {
+        width: 18px;
+      }
+    }
+  }
+}

@@ -1,34 +1,22 @@
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs';
+import { ITask } from 'src/types/my-types';
 
-interface ITask {
-  id: number;
-  title: string;
-  isDone: boolean;
-  createdAt: string;
-}
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  tasks: ITask[] = [];
+  tasks = new BehaviorSubject<ITask[]>([]);
   isEditing = new BehaviorSubject<boolean>(false);
   taskToEdit = new BehaviorSubject<ITask | null>(null);
-
   indexTaskToEdit: number | null = null;
 
   constructor() {
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
-      this.tasks = JSON.parse(storedTasks);
+      this.tasks.next(JSON.parse(storedTasks));
     }
-    console.log('service', this.isEditing);
   }
-
-  generateTaskId = () => {
-    return Math.floor(Math.random() * 100);
-  };
 
   createOrUpdateTask = (newTask: ITask) => {
     if (newTask.title.length === 0) return;
@@ -44,44 +32,45 @@ export class TaskService {
   };
 
   private createTask = (newTask: ITask) => {
-    this.tasks = [...this.tasks, newTask];
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    const currentTasks = this.tasks.getValue();
+    console.log(currentTasks);
+
+    this.tasks.next([...currentTasks, newTask]);
+    localStorage.setItem('tasks', JSON.stringify([...currentTasks, newTask]));
   };
 
   private updateTask = (updatedTask: ITask) => {
+    const currentTasks = this.tasks.getValue();
     if (typeof this.indexTaskToEdit === 'number') {
-      this.tasks[this.indexTaskToEdit] = updatedTask;
+      currentTasks[this.indexTaskToEdit] = updatedTask;
+      this.tasks.next(currentTasks);
       this.isEditing.next(false);
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
+      localStorage.setItem('tasks', JSON.stringify(currentTasks));
     }
   };
   findTaskIndex = (id: number) => {
-    return this.tasks.findIndex((task) => task.id === id);
+    const currentTasks = this.tasks.getValue();
+    return currentTasks.findIndex((task) => task.id === id);
   };
 
   editTask = (id: number) => {
+    const currentTasks = this.tasks.getValue();
     this.isEditing.next(true);
     let index = this.findTaskIndex(id);
-    this.taskToEdit.next(this.tasks[index]);
+    this.taskToEdit.next(currentTasks[index]);
     this.indexTaskToEdit = index;
   };
   deleteTask = (id: number) => {
-    let newTasks = this.tasks.filter((task) => task.id !== id);
-    this.tasks = [...newTasks];
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    const currentTasks = this.tasks.getValue();
+    let newTasks = currentTasks.filter((task) => task.id !== id);
+    this.tasks.next([...newTasks]);
+    localStorage.setItem('tasks', JSON.stringify([...newTasks]));
   };
 
   markTaskAsDone = (id: number) => {
+    const currentTasks = this.tasks.getValue();
     const index = this.findTaskIndex(id);
-    this.tasks[index].isDone = !this.tasks[index].isDone;
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
-  };
-
-  searchTask = (str?: string) => {
-    if (!str) {
-      return this.tasks;
-    }
-    let newTasks = this.tasks.filter((task) => task.title.includes(str));
-    return newTasks;
+    currentTasks[index].isDone = !currentTasks[index].isDone;
+    localStorage.setItem('tasks', JSON.stringify(currentTasks));
   };
 }
